@@ -59,6 +59,7 @@ body, button, input { font-family: var(--body-font); font-size: var(--normal-fon
 h1, h2, h3 { color: var(--title-color); font-weight: var(--font-bold); }
 ul { list-style: none; }
 a { text-decoration: none; }
+a[x-apple-data-detectors], a[href^="tel"] { color: inherit !important; text-decoration: none !important; font-family: inherit !important; }
 img { max-width: 100%; height: auto; }
 button { cursor: pointer; }
     button, input { border: none; outline: none; }
@@ -449,6 +450,10 @@ textarea.input { padding: 0.8rem 1.2rem; min-height: 140px; border-radius: .5rem
     .details-title { margin-bottom: var(--mb075); }
 }
 
+@media screen and (max-width: 992px) {
+    .contact-container { grid-template-columns: 500px; row-gap: 3rem; }
+}
+
 @media screen and (max-width: 768px) {
     .about-img { width: 250px; }
     .qualification-container { grid-template-columns: 290px; row-gap: 3rem; }
@@ -459,7 +464,6 @@ textarea.input { padding: 0.8rem 1.2rem; min-height: 140px; border-radius: .5rem
     .services-content { padding: 3.5rem .5rem 1.25rem 1.5rem; }
     .services-icon { font-size: 1.5rem; }
 
-    .contact-container { grid-template-columns: 360px; row-gap: 3rem; }
     .footer-container { grid-template-columns: repeat(2, 1fr); row-gap: 3rem; }
     .footer-socials { justify-self: start; }
     .footer-links { flex-direction: column; row-gap: 1.5rem; }
