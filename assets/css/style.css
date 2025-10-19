@@ -60,6 +60,8 @@ h1, h2, h3 { color: var(--title-color); font-weight: var(--font-bold); }
 ul { list-style: none; }
 a { text-decoration: none; }
 a[x-apple-data-detectors], a[href^="tel"] { color: inherit !important; text-decoration: none !important; font-family: inherit !important; }
+::selection { background: var(--skin-color); color: black; }
+::-moz-selection { background: var(--skin-color); color: black; }
 img { max-width: 100%; height: auto; }
 button { cursor: pointer; }
     button, input { border: none; outline: none; }
