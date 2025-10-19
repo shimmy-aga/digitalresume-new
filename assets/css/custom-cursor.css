@@ -88,7 +88,7 @@ a, .button, .skills-header, .work-item, .services-button, .services-modal-close,
         transform: scale(1);
     }
     to {
-        transform: scale(2);
+        transform: scale(1.5);
     }
 }
 
