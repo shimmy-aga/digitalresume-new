@@ -258,7 +258,7 @@ button { cursor: pointer; }
 /* Main - Services */ 
 
 .services-container { grid-template-columns: repeat(3, 250px); justify-content: center; column-gap: 1.8rem; }
-.services-content { position: relative; background-color: var(--box-color); padding: 6rem 0 2rem 2.5rem; border-radius: .25rem; }
+.services-content { position: relative; background-color: var(--box-color); padding: 3.5rem 0 2rem 2.5rem; border-radius: .25rem; }
 .services-icon { display: block; font-size: 1.8rem; color: var(--skin-color); margin-bottom: var(--mb1); }
 .services-title { font-size: var(--h3-font-size); margin-bottom: var(--mb1); font-weight: var(--font-medium); }
 .services-button { color: var(--skin-color); font-size: var(--small-font-size); display: flex; align-items: center; column-gap: .25rem; cursor: pointer; }
@@ -283,9 +283,9 @@ button { cursor: pointer; }
 .active-modal { opacity: 1; visibility: visible; }
 .services-modal-content { width: 500px; position: relative; background-color: var(--box-color); padding: 4.5rem 2.5rem 2.5rem; border-radius: .5rem; }
 .services-modal-close { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--skin-color); cursor: pointer; }
-.services-modal-title, .services-modal-description { text-align: center; }
+.services-modal-title, .services-modal-description { text-align: left; }
     .services-modal-title { font-size: var(--h3-font-size); font-weight: var(--font-medium); margin-bottom: var(--mb1); }
-    .services-modal-description { font-size: var(--small-font-size); padding: 0 3.5rem; margin-bottom: var(--mb2); }
+    .services-modal-description { font-size: var(--small-font-size); padding: 0; margin-bottom: var(--mb2); }
 .services-modal-services { row-gap: var(--mb075); }
 .services-modal-service { display: flex; align-items: center; column-gap: .5rem; }
 .services-modal-icon { color: var(--skin-color); font-size: 1.1rem; }
