@@ -91,7 +91,7 @@ modalCloses.forEach((modalClose) => {
 
 let swiper = new Swiper(".testimonials-container", {
     spaceBetween: 24,
-    loop: true,
+    loop: false,
     grabCursor: true,
     pagination: {
       el: ".swiper-pagination",
@@ -103,7 +103,11 @@ let swiper = new Swiper(".testimonials-container", {
         },
         768: {
             slidesPerView: 2,
-            spaceBetween: 48,
+            spaceBetween: 24,
+        },
+        992: {
+            slidesPerView: 3,
+            spaceBetween: 24,
         },
     },
 });
