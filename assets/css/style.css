@@ -303,7 +303,7 @@ button { cursor: pointer; }
 .testimonial-card { background-color: var(--box-color); padding: 1.8rem 2rem; border-radius: .5rem; margin-bottom: 3rem; }
 .testimonial-quote { display: inline-flex; font-size: 1.5rem; color: var(--skin-color); margin-bottom: var(--mb1); }
 .testimonial-description { margin-bottom: var(--mb1); font-size: var(--small-font-size); text-align: justify; }
-.testimonial-date { font-size: var(--normal-font-size); margin-bottom: var(--mb2); }
+.testimonial-date { font-size: var(--normal-font-size); margin-bottom: 5px; }
 .testimonial-profile { display: flex; align-items: center; column-gap: 1rem; }
 .testimonial-profile-img { width: 60px; height: 60px; border-radius: 3rem; }
 .testimonial-profile-name { font-size: var(--h3-font-size); font-weight: var(--font-medium); color: var(--title-color); }
