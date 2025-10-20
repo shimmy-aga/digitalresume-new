@@ -159,6 +159,7 @@ function navHighlighter() {
 const navMenu = document.getElementById('sidebar');
 const navToggle = document.getElementById('nav-toggle');
 const navClose = document.getElementById('nav-close');
+const navLinks = document.querySelectorAll('.nav-link');
 
 if(navToggle) {
     navToggle.addEventListener('click', () => {
@@ -171,5 +172,11 @@ if(navClose) {
         navMenu.classList.remove('show-sidebar');
     })
 }
+
+navLinks.forEach(link => 
+  link.addEventListener('click', () => {
+    navMenu.classList.remove('show-sidebar');
+  })
+);
 
 });
