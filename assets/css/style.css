@@ -57,6 +57,8 @@ html { scroll-behavior: smooth; }
 body, button, input { font-family: var(--body-font); font-size: var(--normal-font-size); }
     body { background-color: var(--body-color); color: var(--text-color); }
 h1, h2, h3 { color: var(--title-color); font-weight: var(--font-bold); }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active, textarea:-webkit-autofill { transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s !important; -webkit-text-fill-color: inherit !important; caret-color: inherit !important; }
+input, textarea { background-color: transparent !important; color: inherit; }
 ul { list-style: none; }
 a { text-decoration: none; }
 a[x-apple-data-detectors], a[href^="tel"] { color: inherit !important; text-decoration: none !important; font-family: inherit !important; }
