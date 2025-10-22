@@ -384,7 +384,13 @@ textarea.input { padding: 0.8rem 1.2rem; min-height: 140px; border-radius: .5rem
             .input-container span::before { left: 50%; }
             .input-container span::after { right: 50%; }
             .input-container.focus label { top: 0; transform: translateY(-50%); left: 25px; font-size: var(--smaller-font-size); }
-                .input-container.focus span::before, .input-container.focus span::after  { width: 50%; opacity: 1; }
+            .input-container.focus span::before, .input-container.focus span::after  { width: 50%; opacity: 1; }
+            .form-err { position: absolute; top: 100%; left: 5%; color:#FF8282; font-size: 0.9rem; display: none; }
+            #form-response { display: none; text-align: center;}
+            #form-response i.fail-icon { font-size: 4rem; color:#FF8282;}
+            #form-response i.success-icon { font-size: 4rem; color: var(--skin-color);}
+            #form-response h3 { font-weight: 400; }
+            
 
 /* Footer */
 

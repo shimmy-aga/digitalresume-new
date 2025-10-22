@@ -21,8 +21,8 @@ const CONFIG = {
     },
 
     styles: {
-        ok:  "rgb(106, 230, 188)",
-        bad: "#FF5C58",
+        ok:  "#6ae6bc",
+        bad: "#FF8282",
     },
     constraints: {
         minMessageLength: 10,
@@ -50,16 +50,17 @@ const onMany = (nodes, evt, fn, opts) => nodes.forEach(n => on(n, evt, fn, opts)
 /* ------------------------------------------------------------------------ */
 
 
-function fadeIn(el, duration = 150) {
+function fadeIn(el, duration = 200) {
     if (!el) return;
     el.style.removeProperty("display");
     if (getComputedStyle(el).display === "none") el.style.display = "block";
-    el.style.opacity = 0;
+    el.style.opacity = 0; el.style.transition = "none";
+    void el.offsetHeight;
     el.style.transition = `opacity ${duration}ms`;
     requestAnimationFrame(() => { el.style.opacity = 1; });
 }
 
-function fadeOut(el, duration = 150) {
+function fadeOut(el, duration = 200) {
     if (!el) return;
     el.style.opacity = 1;
     el.style.transition = `opacity ${duration}ms`;
@@ -85,8 +86,8 @@ function setBorderBAD(el) {
     el.style.borderColor = CONFIG.styles.bad;
 }
 
-function showError(el) { fadeIn(el, 150); }
-function hideError(el) { fadeOut(el, 150); }
+function showError(el) { fadeIn(el, 200); }
+function hideError(el) { fadeOut(el, 200); }
 
 
 /* ------------------------------------------------------------------------ */
@@ -323,8 +324,8 @@ function SubmitFormData() {
     if (hasError) return;
 
     // Success UI
-    fadeOut(els.form, 250);
-    setTimeout(() => fadeIn(els.response, 300), 350);
+    fadeOut(els.form, 350);
+    setTimeout(() => fadeIn(els.response, 350), 350);
 
     // Submit via fetch (x-www-form-urlencoded like $.post)
     const body = new URLSearchParams({ name, email, phone, message });
@@ -334,13 +335,13 @@ function SubmitFormData() {
         headers: CONFIG.submitHeaders,
         body,
     })
-    .then((r) => r.json()) // <-- expect JSON
+    .then((r) => r.json())
     .then((data) => {
-        els.response.textContent = data.message || "Thanks for your message!";
+        els.response.innerHTML = data.message || "<i class='uil uil-check-circle success-icon'></i><h1>That’s a wrap!</h1><h2>Your message was received without a glitch — standby for a reply.</h2>";
         els.form.reset();
     })
     .catch(() => {
-        els.response.textContent = "Something went wrong. Please try again.";
+        els.response.innerHTML = "<i class='uil uil-times-circle fail-icon'></i><h1>Oops, that’s on me.</h1><h3>Looks like my servers are taking a quick break. Give it another go in a moment!</h3>";
     });
 
 }
