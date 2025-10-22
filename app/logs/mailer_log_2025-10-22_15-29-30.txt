@@ -1,0 +1,17 @@
+You’ve received a new contact form submission:
+
+Name:    Shamil Agovic
+Email:   vajzatezeza@gmail.com
+Phone:   0615088378
+Message:
+dedededeed
+
+IP: ::1
+Time: 2025-10-22T15:29:30+02:00
+
+Headers:
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+From: no-reply@agovista.nl
+To: Site Contact <you@example.com>
+Reply-To: vajzatezeza@gmail.com

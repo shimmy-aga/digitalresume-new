@@ -1,38 +1,38 @@
 /* ------------------------------------------------------------------------ */
-/* Config: tweak selectors, styles, behavior                                */
+/* Load mailer.config.json                                                  */
+/* configure selectors, styles, behavior in `app/config/mailer.config.json` */
 /* ------------------------------------------------------------------------ */
 
 
-const CONFIG = {
-    selectors: {
-        form:               "#contact-form",
-        response:           "#form-response",
-        nameInputs:         "input[type='text']",
-        emailInputs:        "input[type='email']",
-        phoneInputs:        "input[type='tel']",
-        messageInputs:      "textarea",
-        errors: {
-            name:         ".error-name",
-            email:        ".error-mail",
-            phone:       ".error-phone",
-            msgRequired:  ".error-empty",
-            msgTooShort:  ".error-too-short",
+const CONFIG = (() => {
+    const JSON_PATH = "/app/config/mailer.config.json";
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", JSON_PATH, false);
+    xhr.send(null);
+
+    if (!(xhr.status >= 200 && xhr.status < 300)) {
+        throw new Error(`Failed to load config file: ${JSON_PATH} (${xhr.status})`);
+    }
+
+    const j = JSON.parse(xhr.responseText);
+
+    return {
+        selectors: j.selectors,
+        styles: j.styles,
+        constraints: {
+            minMessageLength: j.validation.minMessageLength,
+            emailRegex: new RegExp(j.validation.emailRegex),
+            phoneRegex: new RegExp(j.validation.phoneRegex),
+            urlRegex: new RegExp(j.validation.urlRegex, "i"),
+            requirePhone: !!j.validation.requirePhone,   
+            blockUrls: !!j.validation.blockUrls,         
         },
-    },
-
-    styles: {
-        ok:  "#6ae6bc",
-        bad: "#FF8282",
-    },
-    constraints: {
-        minMessageLength: 10,
-        emailRegex: /^\S+@\S+\.\S+$/,
-    },
-    // Network settings
-    submitUrl: "/php-files/contact-form-submit.php",
-    submitHeaders: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-};
-
+        submitUrl: j.network.submitUrl,
+        submitHeaders: j.network.submitHeaders,
+        messages: j.messages || undefined,
+    };
+})();
+ 
 
 /* ------------------------------------------------------------------------ */
 /* DOM util + selectors                                                     */
@@ -98,8 +98,9 @@ function hideError(el) { fadeOut(el, 200); }
 const Validators = {
     required: (v) => !!v && v.trim().length > 0,
     email:    (v) => CONFIG.constraints.emailRegex.test(v || ""),
-    phone:    (v) => /^(\+?\d{7,15})$/.test((v || "").replace(/[^\d+]/g, "")),
+    phone:    (v) => CONFIG.constraints.phoneRegex.test((v || "").replace(/[^\d+]/g, "")),
     minLen:   (min) => (v) => (v || "").trim().length >= min,
+    noUrls:   (v) => !CONFIG.constraints.urlRegex.test(v || ""),
 };
 
 
@@ -114,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const els = {
     form:        $1(CONFIG.selectors.form),
-    response: $1(CONFIG.selectors.response),
+    response:    $1(CONFIG.selectors.response),
     nameInputs:  $$(CONFIG.selectors.nameInputs),
     emailInputs: $$(CONFIG.selectors.emailInputs),
     phoneInputs: $$(CONFIG.selectors.phoneInputs),
@@ -125,6 +126,7 @@ const els = {
         phone:       $1(CONFIG.selectors.errors.phone),
         msgRequired: $1(CONFIG.selectors.errors.msgRequired),
         msgTooShort: $1(CONFIG.selectors.errors.msgTooShort),
+        msgHasLinks: $1(CONFIG.selectors.errors.msgHasLinks),
     },
 };
 
@@ -232,12 +234,15 @@ function wireMessageInputs(inputs, errRequiredEl, errTooShortEl) {
 
     onMany(inputs, "keyup", (e) => {
         const val = e.target.value;
-        if (!passesRequired(val) || !passesMin(val)) {
+        const badUrl = CONFIG.constraints.blockUrls && !Validators.noUrls(val);
+
+        if (!passesRequired(val) || !passesMin(val) || badUrl) {
             setBorderBAD(e.target);
         } else {
             setBorderOK(e.target);
             hideError(errRequiredEl);
             hideError(errTooShortEl);
+            if (els.errors.msgHasLinks) hideError(els.errors.msgHasLinks);
         }
     });
 
@@ -245,17 +250,27 @@ function wireMessageInputs(inputs, errRequiredEl, errTooShortEl) {
 
     onMany(inputs, "blur", (e) => {
         const val = e.target.value;
+        const badUrl = CONFIG.constraints.blockUrls && !Validators.noUrls(val);
+
         if (!passesRequired(val)) {
             setBorderBAD(e.target);
             showError(errRequiredEl);
             hideError(errTooShortEl);
+            if (els.errors.msgHasLinks) hideError(els.errors.msgHasLinks);
         } else if (!passesMin(val)) {
             setBorderBAD(e.target);
             showError(errTooShortEl);
             hideError(errRequiredEl);
+            if (els.errors.msgHasLinks) hideError(els.errors.msgHasLinks);
+        } else if (badUrl) {
+            setBorderBAD(e.target);
+            hideError(errRequiredEl);
+            hideError(errTooShortEl);
+            if (els.errors.msgHasLinks) showError(els.errors.msgHasLinks);
         } else {
             hideError(errRequiredEl);
             hideError(errTooShortEl);
+            if (els.errors.msgHasLinks) hideError(els.errors.msgHasLinks);
         }
     });
 
@@ -266,7 +281,7 @@ function wireMessageInputs(inputs, errRequiredEl, errTooShortEl) {
 wireRequiredInputs(els.nameInputs,  els.errors.name);
 wireEmailInputs(els.emailInputs, els.errors.email);
 wirePhoneInputs(els.phoneInputs, els.errors.phone);
-wireMessageInputs( els.msgInputs,   els.errors.msgRequired, els.errors.msgTooShort);
+wireMessageInputs( els.msgInputs,   els.errors.msgRequired, els.errors.msgTooShort, els.errors.msgHasLinks);
 
 
 /* ------------------------------------------------------------------------ */
@@ -302,7 +317,8 @@ function SubmitFormData() {
     }
 
     // Phone
-    if (!Validators.phone(phone)) {
+    const phoneIsRequired = CONFIG.constraints.requirePhone;
+    if ((phoneIsRequired || phone) && !Validators.phone(phone)) {  
         hasError = true;
         setBorderBAD(phoneInput);
         showError(els.errors.phone);
@@ -312,13 +328,25 @@ function SubmitFormData() {
     if (!Validators.required(message)) {
         hasError = true;
         setBorderBAD(msgInput);
-        showError(els.errors.msgRequired);
         hideError(els.errors.msgTooShort);
+        showError(els.errors.msgRequired);
+        hideError(els.errors.msgHasLinks);
     } else if (!Validators.minLen(CONFIG.constraints.minMessageLength)(message)) {
         hasError = true;
         setBorderBAD(msgInput);
         showError(els.errors.msgTooShort);
         hideError(els.errors.msgRequired);
+        hideError(els.errors.msgHasLinks);
+    } else if (CONFIG.constraints.blockUrls && !Validators.noUrls(message)) {
+        hasError = true;
+        setBorderBAD(msgInput);
+        hideError(els.errors.msgTooShort);
+        hideError(els.errors.msgRequired);
+        showError(els.errors.msgHasLinks);
+    } else {
+        hideError(els.errors.msgRequired);
+        hideError(els.errors.msgTooShort);
+        hideError(els.errors.msgHasLinks);
     }
 
     if (hasError) return;
@@ -336,17 +364,18 @@ function SubmitFormData() {
         body,
     })
     .then((r) => r.json())
-    .then((data) => {
-        els.response.innerHTML = data.message || "<i class='uil uil-check-circle success-icon'></i><h1>That’s a wrap!</h1><h2>Your message was received without a glitch — standby for a reply.</h2>";
+    .then(() => {
+        els.response.innerHTML = CONFIG.messages?.successHTML || "";
         els.form.reset();
     })
     .catch(() => {
-        els.response.innerHTML = "<i class='uil uil-times-circle fail-icon'></i><h1>Oops, that’s on me.</h1><h3>Looks like my servers are taking a quick break. Give it another go in a moment!</h3>";
+        els.response.innerHTML = CONFIG.messages?.failHTML || "";
     });
 
 }
 
 // Expose globally if called inline (e.g., onclick="SubmitFormData()")
 window.SubmitFormData = SubmitFormData;
+
 });
 

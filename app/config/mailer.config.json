@@ -1,0 +1,70 @@
+{
+    
+    "selectors": {
+        "form": "#contact-form",
+        "response": "#form-response",
+        "nameInputs": "input[type='text']",
+        "emailInputs": "input[type='email']",
+        "phoneInputs": "input[type='tel']",
+        "messageInputs": "textarea",
+        "errors": {
+            "name": ".error-name",
+            "email": ".error-mail",
+            "phone": ".error-phone",
+            "msgRequired": ".error-empty",
+            "msgTooShort": ".error-too-short",
+            "msgHasLinks": ".error-links"
+        }
+    },
+
+    "styles": {
+        "ok": "#6ae6bc",
+        "bad": "#FF8282"
+    },
+
+    "validation": {
+        "emailRegex": "^\\S+@\\S+\\.\\S+$",
+        "phoneRegex": "^\\+?\\d{7,15}$",
+        "urlRegex": "(?:https?:\\/\\/|www\\.)\\S+|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+(?:[a-z]{2,}|xn--[a-z0-9-]{2,})",
+        "urlRegexFlags": "i",
+        "minMessageLength": 10,
+        "requirePhone": true,
+        "blockUrls": true
+    },
+
+    "network": {
+        "submitUrl": "/app/handlers/mailer.php",
+        "submitHeaders": {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+        }
+    },
+
+    "mail": {
+        "mode": "file",                       
+        "filePath": "/logs",              
+
+        "transport": "smtp",                  
+        "host": "127.0.0.1",
+        "port": 1025,
+        "secure": false,                      
+        "auth": false,
+        "username": "",
+        "password": "",
+
+        "from": "no-reply@agovista.nl",
+        "to": { "you@example.com": "Site Contact" },
+        "subject": "New contact form submission"
+    },
+
+    "messages": {
+        "successHTML": "<i class='uil uil-check-circle success-icon'></i><h1>That’s a wrap!</h1><h3>Your message was received without a glitch — standby for a reply.</h3>",
+        "failHTML": "<i class='uil uil-times-circle fail-icon'></i><h1>Oops, that’s on me.</h1><h3>Looks like my servers are taking a quick break. Give it another go in a moment!</h3>",
+        "badRequestHTML": "Please fix the highlighted fields and try again.",
+        "rateHTML": "Too many submissions. Please try again later."
+    },
+
+    "limits": {
+        "rateLimitPerHour": 5
+    }
+
+}
